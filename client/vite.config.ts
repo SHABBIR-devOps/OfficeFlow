@@ -4,8 +4,8 @@ import path from 'path';
 import { defineConfig, loadEnv } from 'vite';
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, '.', '');
-  
+  const env = loadEnv(mode, process.cwd(), '');
+
   return {
     plugins: [react(), tailwindcss()],
     define: {
@@ -16,14 +16,27 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, './src'),
       },
     },
-    // build অপশনটি এখানে থাকবে (resolve এর বাইরে)
     build: {
-      outDir: 'dist',
+      outDir: '../server/dist',
       emptyOutDir: true,
     },
     server: {
-      // HMR is disabled in AI Studio via DISABLE_HMR env var.
+      port: 5173,
+      host: true,
+      proxy: {
+        '/api': {
+          target: 'http://127.0.0.1:5000',
+          changeOrigin: true,
+          secure: false,
+        },
+        '/uploads': {
+          target: 'http://127.0.0.1:5000',
+          changeOrigin: true,
+          secure: false,
+        }
+      },
       hmr: process.env.DISABLE_HMR !== 'true',
     },
   };
 });
+

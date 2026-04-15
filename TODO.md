@@ -1,0 +1,1 @@
+- [x] Step 1a: Edit server/routes/authRoutes.ts - Add `authenticate` middleware to GET `/me`

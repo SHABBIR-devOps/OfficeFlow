@@ -22,6 +22,24 @@ const Register: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
 
+    // Client-side validation
+    const isStrongPassword = (password: string) => {
+      const regex = /^[A-Za-z0-9]{6,8}$/;
+      return regex.test(password);
+    };
+
+    if (!formData.name.trim() || !formData.email.trim() || !formData.password.trim()) {
+      toast.error('Name, Email, and Password are required');
+      setIsLoading(false);
+      return;
+    }
+
+    if (!isStrongPassword(formData.password)) {
+      toast.error('Password must be 6-8 characters (letters and numbers only).');
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const response = await api.post('/auth/register', formData);
       toast.success(response.data.message);
@@ -125,7 +143,7 @@ const Register: React.FC = () => {
                   </button>
                 </div>
                 <p className="text-[10px] text-slate-400">
-                  Min 8 chars, uppercase, lowercase, number & symbol
+                  6-8 chars, letters & numbers only.
                 </p>
               </div>
             </CardContent>

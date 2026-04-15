@@ -26,8 +26,11 @@ export const checkIn = async (req: any, res: Response) => {
 
 export const checkOut = async (req: any, res: Response) => {
   try {
+    console.log('CHECKOUT START - user.id:', req.user?.id, 'auth:', !!req.user);
     const date = format(new Date(), 'yyyy-MM-dd');
+    console.log('Search criteria:', { employee: req.user.id, date });
     const attendance = await Attendance.findOne({ employee: req.user.id, date });
+    console.log('Found record:', attendance);
 
     if (!attendance) {
       return res.status(404).json({ message: 'No check-in record found for today' });

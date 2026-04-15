@@ -99,20 +99,22 @@ const DashboardLayout: React.FC = () => {
       {/* Main Content */}
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         {/* Header */}
-        <header className="bg-white border-bottom border-slate-200 h-16 flex items-center justify-between px-4 lg:px-8 flex-shrink-0">
-          <div className="flex items-center lg:hidden">
-            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="w-6 h-6" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="p-0 w-64">
-                <SidebarContent />
-              </SheetContent>
-            </Sheet>
-            <span className="ml-4 font-bold text-xl text-slate-900">OfficeFlow</span>
-          </div>
+        <header className="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-4 lg:px-8 flex-shrink-0">
+  <div className="flex items-center lg:hidden">
+    <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+      {/* সমাধান: asChild সরিয়ে সরাসরি Button ব্যবহার করুন অথবা Button-এর বদলে div/span দিন */}
+      <SheetTrigger>
+        <div className="p-2 hover:bg-slate-100 rounded-md cursor-pointer transition-colors">
+          <Menu className="w-6 h-6 text-slate-600" />
+        </div>
+      </SheetTrigger>
+      
+      <SheetContent side="left" className="p-0 w-64 border-none">
+        <SidebarContent />
+      </SheetContent>
+    </Sheet>
+    <span className="ml-4 font-bold text-xl text-slate-900">OfficeFlow</span>
+  </div>
           
           <div className="flex-1 flex justify-end items-center gap-4">
             <div className="hidden sm:block text-sm text-slate-500">

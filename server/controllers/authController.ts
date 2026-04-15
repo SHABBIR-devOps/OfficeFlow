@@ -27,7 +27,8 @@ const isStrongPassword = (password: string) => {
 
 // 3. Register Function
 export const register = async (req: Request, res: Response, next: NextFunction) => {
-  try {
+try {
+  console.log('REGISTER BODY:', req.body);
     const { name, email, password } = req.body;
 
     // Validation
@@ -50,7 +51,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
 
     if (!isStrongPassword(password)) {
       return res.status(400).json({ 
-        message: 'Password must be at least 6 characters long and include at least one letter and one number' 
+        message: 'Password must be at least 6 characters and contain only letters and numbers (no special characters).' 
       });
     }
 
@@ -204,7 +205,13 @@ export const logout = (req: Request, res: Response) => {
 // 9. Get Me Function
 export const getMe = async (req: any, res: Response, next: NextFunction) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Unauthorized - No user context' });
+    }
     const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
     res.json(user);
   } catch (error: any) {
     next(error);

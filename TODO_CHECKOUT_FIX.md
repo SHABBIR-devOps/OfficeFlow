@@ -1,0 +1,1 @@
+# Checkout Button Fix - Attendance System\n\n## Steps:\n- [ ] Step 1: Add debug logs to server/controllers/attendanceController.ts checkOut()\n- [ ] Step 2: Add debug/error handling to client/src/pages/Attendance.tsx handleCheckOut\n- [ ] Step 3: Test check-in → checkout flow\n- [ ] Step 4: Verify DB update, remove debug logs\n\n**Status: Starting debug...**

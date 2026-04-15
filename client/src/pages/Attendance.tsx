@@ -65,11 +65,14 @@ const Attendance: React.FC = () => {
   };
 
   const handleCheckOut = async () => {
+    console.log('Frontend checkout call, user:', user);
     try {
-      await api.post('/attendance/check-out');
+      const response = await api.post('/attendance/check-out');
+      console.log('Checkout response:', response.data);
       toast.success('Checked out successfully');
       fetchAttendance();
     } catch (error: any) {
+      console.error('Checkout error:', error.response?.data || error);
       toast.error(error.response?.data?.message || 'Check-out failed');
     }
   };
