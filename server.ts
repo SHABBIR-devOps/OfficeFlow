@@ -23,10 +23,9 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-async function startServer() {
-  const app = express();
-  const PORT = 3000;
+const app = express(); // app-কে ফাংশনের বাইরে নিয়ে আসা হয়েছে Vercel-এর সুবিধার জন্য
 
+async function setupServer() {
   // Middleware
   app.use(cors({ origin: true, credentials: true }));
   app.use(express.json());
@@ -41,12 +40,10 @@ async function startServer() {
       await mongoose.connect(MONGODB_URI);
       console.log('Successfully connected to MongoDB');
 
-      // --- ADMIN SEEDING LOGIC (FORCE UPDATE) ---
       const adminEmail = 'admin@officeflow.com';
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash('adminpassword123', salt);
 
-      // adminCount check na kore directly upsert korchi jate password update hoy
       await User.findOneAndUpdate(
         { email: adminEmail },
         {
@@ -60,14 +57,10 @@ async function startServer() {
         },
         { upsert: true, new: true }
       );
-      console.log('✅ Admin Account is Ready (admin@officeflow.com / adminpassword123)');
-      // ------------------------------------------
-
+      console.log('✅ Admin Account is Ready');
     } catch (err: any) {
       console.error('❌ MongoDB Error:', err.message);
     }
-  } else {
-    console.error('MONGODB_URI missing or invalid in .env file!');
   }
 
   // API Routes
@@ -83,7 +76,7 @@ async function startServer() {
 
   app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-  // Vite development mode logic
+  // Vite / Production Logic
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
       server: { middlewareMode: true },
@@ -95,10 +88,18 @@ async function startServer() {
     app.use(express.static(distPath));
     app.get('*', (req, res) => res.sendFile(path.join(distPath, 'index.html')));
   }
-
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-  });
 }
 
-startServer().catch(err => console.error(err));
+// সার্ভার স্টার্ট এবং পোর্ট লিসেনিং
+const PORT = process.env.PORT || 3000;
+
+setupServer().then(() => {
+  if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+      console.log(`🚀 Local Server: http://localhost:${PORT}`);
+    });
+  }
+});
+
+// Vercel-এর জন্য এক্সপোর্ট
+export default app;
