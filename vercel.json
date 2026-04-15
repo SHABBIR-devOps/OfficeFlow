@@ -13,7 +13,7 @@
     },
     {
       "source": "/((?!api/).*)",
-      "destination": "server.ts"
+      "destination": "/index.html"
     }
   ]
 }

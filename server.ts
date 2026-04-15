@@ -9,13 +9,12 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 
 // --- FIXED: Removed .ts extensions ---
-import authRoutes from './server/routes/authRoutes';
-import investorRoutes from './server/routes/investorRoutes';
-import employeeRoutes from './server/routes/employeeRoutes';
-import attendanceRoutes from './server/routes/attendanceRoutes';
-import taskRoutes from './server/routes/taskRoutes';
-import User from './server/models/User';
-
+import authRoutes from './server/routes/authRoutes.js';
+import investorRoutes from './server/routes/investorRoutes.js';
+import employeeRoutes from './server/routes/employeeRoutes.js';
+import attendanceRoutes from './server/routes/attendanceRoutes.js';
+import taskRoutes from './server/routes/taskRoutes.js';
+import User from './server/models/User.js';
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
