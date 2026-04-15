@@ -5,8 +5,8 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext.tsx';
-import { Toaster } from './components/ui/sonner.tsx';
+import { AuthProvider, useAuth } from './context/AuthContext.js';
+import { Toaster } from './components/ui/sonner.js';
 import Login from './pages/Login.js';
 import Register from './pages/Register.js';
 import ForgotPassword from './pages/ForgotPassword.js';
