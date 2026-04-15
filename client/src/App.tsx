@@ -7,17 +7,17 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext.tsx';
 import { Toaster } from './components/ui/sonner.tsx';
-import Login from './pages/Login.tsx';
-import Register from './pages/Register.tsx';
-import ForgotPassword from './pages/ForgotPassword.tsx';
-import ResetPassword from './pages/ResetPassword.tsx';
-import VerifyEmail from './pages/VerifyEmail.tsx';
-import DashboardLayout from './components/Layout/DashboardLayout.tsx';
-import Dashboard from './pages/Dashboard.tsx';
-import Investors from './pages/Investors.tsx';
-import Employees from './pages/Employees.tsx';
-import Attendance from './pages/Attendance.tsx';
-import Tasks from './pages/Tasks.tsx';
+import Login from './pages/Login.js';
+import Register from './pages/Register.js';
+import ForgotPassword from './pages/ForgotPassword.js';
+import ResetPassword from './pages/ResetPassword.js';
+import VerifyEmail from './pages/VerifyEmail.js';
+import DashboardLayout from './components/Layout/DashboardLayout.js';
+import Investors from './pages/Investors.js';
+import Dashboard from './pages/Dashboard.js';
+import Employees from './pages/Employees.js';
+import Attendance from './pages/Attendance.js';
+import Tasks from './pages/Tasks.js';
 
 const PrivateRoute = ({ children, roles }: { children: React.ReactNode, roles?: string[] }) => {
   const { user, loading } = useAuth();
