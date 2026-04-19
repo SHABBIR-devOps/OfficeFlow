@@ -24,17 +24,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const checkAuth = async () => {
       const token = localStorage.getItem('token');
+
       if (token) {
         try {
-          const response = await api.get('/auth/me');
+          const response = await api.get('/api/auth/me');
           setUser(response.data);
         } catch (error) {
           localStorage.removeItem('token');
           setUser(null);
         }
       }
+
       setLoading(false);
     };
+
     checkAuth();
   }, []);
 
@@ -45,10 +48,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = async () => {
     try {
-      await api.post('/auth/logout');
+      await api.post('/api/auth/logout');
     } catch (error) {
       console.error('Logout error:', error);
     }
+
     localStorage.removeItem('token');
     setUser(null);
   };
@@ -62,8 +66,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
+
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
+
   return context;
 };
