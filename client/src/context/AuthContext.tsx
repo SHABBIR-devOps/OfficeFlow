@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import api from '../services/api.ts';
+import api from '../services/api';
 
 interface User {
   id: string;
@@ -12,14 +12,14 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   login: (token: string, user: User) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -27,9 +27,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (token) {
         try {
-          const response = await api.get('/api/auth/me');
+          const response = await api.get<User>('/api/auth/me');
           setUser(response.data);
         } catch (error) {
+          console.error('Auth check failed:', error);
           localStorage.removeItem('token');
           setUser(null);
         }
@@ -64,10 +65,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
 
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
 

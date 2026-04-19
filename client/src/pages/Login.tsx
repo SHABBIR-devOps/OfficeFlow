@@ -17,17 +17,18 @@ const Login: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const response = await api.post('/auth/login', { email, password });
+      const response = await api.post('/api/auth/login', { email, password });
       login(response.data.token, response.data.user);
       toast.success('Login successful!');
       navigate('/');
     } catch (error: any) {
       toast.error(error.response?.data?.message || 'Login failed. Please check your credentials.');
+      console.error('Login error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -51,44 +52,47 @@ const Login: React.FC = () => {
               Enter your email and password to access the dashboard
             </CardDescription>
           </CardHeader>
+
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
-                  <Input 
-                    id="email" 
-                    type="email" 
-                    placeholder="name@company.com" 
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="name@company.com"
                     className="pl-10"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                     required
                   />
                 </div>
               </div>
+
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label htmlFor="password">Password</Label>
-                  <Link 
-                    to="/forgot-password" 
+                  <Link
+                    to="/forgot-password"
                     className="text-sm font-medium text-indigo-600 hover:underline"
                   >
                     Forgot password?
                   </Link>
                 </div>
+
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
-                  <Input 
-                    id="password" 
-                    type={showPassword ? "text" : "password"} 
+                  <Input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
                     className="pl-10 pr-10"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                     required
                   />
-                  <button 
+                  <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-3 text-slate-400 hover:text-slate-600"
@@ -98,8 +102,13 @@ const Login: React.FC = () => {
                 </div>
               </div>
             </CardContent>
+
             <CardFooter className="flex flex-col gap-4">
-              <Button className="w-full bg-indigo-600 hover:bg-indigo-700 h-11" type="submit" disabled={isLoading}>
+              <Button
+                className="w-full bg-indigo-600 hover:bg-indigo-700 h-11"
+                type="submit"
+                disabled={isLoading}
+              >
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -109,8 +118,9 @@ const Login: React.FC = () => {
                   'Sign In'
                 )}
               </Button>
+
               <div className="text-center text-sm text-slate-500">
-                Don't have an account?{' '}
+                Don&apos;t have an account?{' '}
                 <Link to="/register" className="text-indigo-600 font-medium hover:underline">
                   Register
                 </Link>
@@ -118,7 +128,7 @@ const Login: React.FC = () => {
             </CardFooter>
           </form>
         </Card>
-        
+
         <p className="text-center text-sm text-slate-500 mt-8">
           Internal Office Management System &bull; &copy; 2026 OfficeFlow
         </p>
