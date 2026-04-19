@@ -20,26 +20,28 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
 const app = express();
-const PORT = process.env.PORT || (process.env.NODE_ENV === 'production' ? 3000 : 5000);
+const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));  // uploads at root
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // MongoDB
 const MONGODB_URI = process.env.MONGODB_URI;
+
 if (MONGODB_URI) {
   mongoose.connect(MONGODB_URI)
     .then(async () => {
       console.log('✅ Connected to MongoDB');
+
       // Create admin if not exists
       const adminEmail = 'admin@officeflow.com';
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash('adminpassword123', salt);
+
       await User.findOneAndUpdate(
         { email: adminEmail },
         {
@@ -51,14 +53,18 @@ if (MONGODB_URI) {
           status: 'active',
           isVerified: true
         },
-        { upsert: true }
+        { upsert: true, new: true }
       );
     })
     .catch(err => console.error('❌ MongoDB Error:', err));
+} else {
+  console.error('❌ MONGODB_URI is not defined');
 }
 
 // API Routes
-app.get('/api/health', (req, res) => res.json({ status: 'ok', message: 'OfficeFlow API Server running' }));
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', message: 'OfficeFlow API Server running' });
+});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/investors', investorRoutes);
@@ -66,18 +72,19 @@ app.use('/api/employees', employeeRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/tasks', taskRoutes);
 
-// Production: Serve client build from server/dist
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'dist')));
-  app.get('/{*splat}', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist/index.html'));
+// Root route for Render backend service
+app.get('/', (req, res) => {
+  res.json({ message: 'OfficeFlow API is running' });
 });
-}
 
-app.listen(PORT,'0.0.0.0', () => {
+// Optional: handle unknown API routes
+app.use('/api/{*splat}', (req, res) => {
+  res.status(404).json({ message: 'API route not found' });
+});
+
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📱 Client (dev): http://localhost:5173`);
+  console.log('📱 Client (dev): http://localhost:5173');
 });
 
 export default app;
-
